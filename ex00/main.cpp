@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 12:53:33 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/16 14:56:20 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/16 15:36:40 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,18 @@ int isNumber(std::string number)
 }
 void parseGeneralError(std::list<std::string> lineSplit, int lineNum)
 {
+	char *rest = 0;
 	std::list<std::string>::iterator firstIt = lineSplit.begin();
 	int i = 0;
 	for (std::list<std::string>::iterator it = firstIt; it != lineSplit.end(); it++)
 	{
-		// trimSpace(*it);
-		if (lineSplit.size() != 2 || (it == firstIt && ((*it).size() != 11 || (*it)[10] != ' '))) {
-			std::cerr << "Error : in line " << lineNum << " date not valid\n";
-			break ;
-		}
-		else if ((++it)-- == lineSplit.end() && (((*it).size() != 2 && (*it).size() != 3 && (*it).size() != 4 && (*it).size() != 5)
-				|| (*it)[0] != ' ' || (*it)[1] == ' ')) {
-			std::cerr << "Error : in line " << lineNum << " value not valid\n";
+
+		if (lineSplit.size() != 2) {
+			std::cerr << "Error : general error in line " << lineNum<< std::endl;
 			break ;
 		}
 		trimSpace(*it);
+
 		if (it == firstIt) {
 			std::list<std::string> date = split(*it, "-");
 			if (date.size() != 3) {
@@ -88,7 +85,9 @@ void parseGeneralError(std::list<std::string> lineSplit, int lineNum)
 			}
 			for (std::list<std::string>::iterator it1 = date.begin(); it1 != date.end(); it1++)
 			{
-				if (!isNumber(*it1)) {
+				double number = strtod((*it1).c_str(), &rest);
+
+				if (*rest || !number) {
 					if (i == 0)
 						std::cerr << "Error : in line " << lineNum << " Year not a number\n";
 					else if (i == 1)
@@ -96,11 +95,17 @@ void parseGeneralError(std::list<std::string> lineSplit, int lineNum)
 					else if (i == 2)
 						std::cerr << "Error : in line " << lineNum << " Day not a number\n";
 				}
-				i ++;
+				i++;
 			}
-			
+			rest = 0;
 		}
-		
+		else {
+			double number = strtod((*it).c_str(), &rest);
+			if (*rest || !number) {
+				std::cerr << "Error : in line " << lineNum << " value not a number\n";
+			
+			}
+		}
 	}
 }
 
