@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 12:53:33 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/17 15:50:47 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/17 20:53:33 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,152 +49,100 @@ void trimSpace(std::string &remove)
 int isNumber(std::string number)
 {
 	for (size_t i = 0; i < number.size(); i++)
-	{
 		if (!isdigit(number[i]))
 			return (0);
-	}
 	return (1);
 }
-void parseDate(std::list<std::string> lineSplit, int lineNum)
+
+void parseDate(std::string date, int lineNum, std::string delimiter)
 {
-	// std::list<std::string>				date;
-	// std::list<int>::iterator			dateit;
-	std::list<std::string>				dateString;
-	std::list<std::string>::iterator	dateStringit;
-	
-	std::list<int>						dateInt;
-	std::list<int>::iterator			dateIntit;
-	
-	std::list<std::string>::iterator	lineSplitIt;
-	
-	if (lineSplit.size() != 2) {
-		std::cerr << "Error : general error in line " << lineNum<< std::endl;
-	}
+	std::list<std::string>				dateSplit;
+	std::list<std::string>::iterator	dateSplitIt;
+
+	long								dateLong[3];
+
+
+	char *rest = 0;
+	dateSplit = split(date, delimiter);
+	if (dateSplit.size() != 3)
+		std::cerr << "Error : in line " << lineNum << " date not valid\n";
 	else {
-		char *rest = 0;
-		lineSplitIt = lineSplit.begin();
-		// for (; lineSplitIt != lineSplit.end(); lineSplitIt++)
-		// {
-		// 	std::cout << "#" << *lineSplitIt << "#" << std::endl;
-		// }
-		
-		// trimSpace(*it);
-		// trimSpace(*++it);
-		// std::cout << "#" << *it << "#" << std::endl;
-		// std::cout << "#" << *++it << "#" << std::endl;
-		// std::cout << *it << std::endl;
-		
-		dateString = split(*lineSplit.begin(), "-");
-		if (dateString.size() != 3)
-			std::cerr << "Error : in line " << lineNum << " date not valid\n";
-		else {
-			for (dateStringit = dateString.begin(); dateStringit != dateString.end(); dateStringit++)
-			{
-				std::cout << "$" << *dateStringit << "$" << std::endl;
-				trimSpace(*dateStringit);
-				long number = strtol((*dateStringit).c_str(), &rest, 10);
-				if (*rest || !number) {
-					std::cerr << "Error : in line " << lineNum << " date not valid\n";
-					break ;
-				}
-				dateInt.push_back(number);
+		int i = 0;
+		for (dateSplitIt = dateSplit.begin(); dateSplitIt != dateSplit.end(); dateSplitIt++)
+		{
+			std::cout << "#" << *dateSplitIt << "#" << std::endl;
+			// trimSpace(*dateSplitIt);
+			long number = strtol((*dateSplitIt).c_str(), &rest, 10);
+			if (*rest || (!number && *rest)) {
+				std::cerr << "Error : in line " << lineNum << " date not valid\n";
+				break ;
 			}
-			// int i = 0;
-			for (dateIntit = dateInt.begin(); dateIntit != dateInt.end(); dateIntit++)
-			{
-				std::cout << "$" << *dateIntit << "$" << std::endl;
-				// if (i = 0)
-				// {
-				// 	std::cerr << "Error : in line " << lineNum << " Year not valid\n";
-				// }
-				// i++;
-			}
-			
-			// Dateit = Date.begin();
-			// for (; Dateit != Date.end(); Dateit++)
-			// {
-			// 	// Date.push_back(strtod((*dateit).c_str(), &rest));
-			// 	std::cout << "$" << *Dateit << "$" << std::endl;
-			// 	// std::cout << "$" << *dateit << "$" << std::endl;
-			// }
-			// dateit = date.begin();
+			else
+				dateLong[i] = number;
+			// 	dateInt.push_back(number);
+			// std::cout << "$" << number << "$" << std::endl;
+			i++;
+		}
+		i = 0;
+		for (size_t i = 0; i < 3; i++)
+		{
+			std::cout << "$" << dateLong[i] << "$" << std::endl;
+			if (i == 0 && !(dateLong[i] >= 2009 && dateLong[i] <= 2023) )
+				std::cerr << "Error : in line " << lineNum << " Year not valid\n";
+			else if (i == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 12))
+				std::cerr << "Error : in line " << lineNum << " Month not valid\n";
+			else if (i == 2 && ( !(dateLong[i] >= 1 && dateLong[i] <= 12)
+			|| (dateLong[i - 1] != 2 && dateLong[i - 1] % 2 == 0 && !(dateLong[i] >= 1 && dateLong[i] <= 30))
+			|| (dateLong[i - 1] != 2 && dateLong[i - 1] % 2 == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 31))
+			|| (dateLong[i - 1] == 2 && ((dateLong[i - 2] % 4 == 0 && dateLong[i - 1] == 2 && dateLong[i] >= 30) || 
+										(dateLong[i - 2] % 4 != 0 && dateLong[i - 1] == 2 && dateLong[i] >= 29) )
+			)))
+				std::cerr << "Error : in line " << lineNum << " Day not valid\n";
 		}
 		
-		// else {
-		// dateit = date.begin();
-		// std::cout << "$" << *dateit << "$" << std::endl;
-		// std::cout << "$" << *++dateit << "$" << std::endl;
-		// // std::cout << "$" << *++dateit << "$" << std::endl;
-		// std::cout << *++it << std::endl;
+		// for (dateIntIt = dateInt.begin(); dateIntIt != dateInt.end(); dateIntIt++)
+		// {
+		// 	std::cout << "$" << i << " " <<(*dateIntIt) << "$" << std::endl;
+		// 	if (i == 0 && !((*dateIntIt) >= 2009 && (*dateIntIt) <= 2023) )
+		// 		std::cerr << "Error : in line " << lineNum << " Year not valid\n";
+		// 	else if (i == 1 && (!((*dateIntIt) >= 1 && (*dateIntIt) <= 12)
+		// 	|| ((*(--dateIntIt)++) == 2009 && !((*dateIntIt) >= 1 && (*dateIntIt) <= 12))))
+		// 		std::cerr << "Error : in line " << lineNum << " Month not valid\n";
+		// 	else if (i == 2 && (!((*dateIntIt) >= 1 && (*dateIntIt) <= 30)
+		// 	|| ((*dateIntIt) == 2009 && (*(--dateIntIt)++) == 1 && (*dateIntIt) < 3)))
+		// 		std::cerr << "Error : in line " << lineNum << " Day not valid\n";
+		// 	i++;
 		// }
 	}
-	// int i = 0;
-	// for (std::list<std::string>::iterator it = firstIt; it != lineSplit.end(); it++)
-	// {
-		// if (lineSplit.size() != 2) {
-		// 	std::cerr << "Error : general error in line " << lineNum<< std::endl;
-		// 	// break ;
-		// }
-		// else {
-											// trimSpace(*it);
-											// std::list<std::string> date;
-											// if (it == firstIt) {
-											// 	date = split(*it, "-");
-											// 	if (date.size() != 3) {
-											// 		std::cerr << "Error : in line " << lineNum << " date not valid\n";
-											// 		// break ;
-											// 	}
-											// 	else
-											// 	{
-											// 		std::list<std::string>::iterator it1 = date.begin();
-											// 		double year = strtod((*it1).c_str(), &rest);
-											// 		double month = strtod((*++it1).c_str(), &rest);
-											// 		double day = strtod((*++it1).c_str(), &rest);
-											// 		std::cout << year << std::endl;
-											// 		std::cout << month << std::endl;
-											// 		std::cout << day << std::endl;
-											// 		// for (std::list<std::string>::iterator it1 = date.begin(); it1 != date.end(); it1++)
-											// 		// {
-											// 		// 	double number = strtod((*it1).c_str(), &rest);
-											// 		// 	if (*rest || !number) {
-											// 		// 			std::cerr << "Error : in line " << lineNum << " date not valid\n";
-											// 		// 		// if (i == 0)
-											// 		// 		// else if (i == 1)
-											// 		// 		// 	std::cerr << "Error : in line " << lineNum << " Month valid\n";
-											// 		// 		// else if (i == 2)
-											// 		// 		// 	std::cerr << "Error : in line " << lineNum << " Day valid\n";
-											// 		// 		// break ;
-											// 		// 	}
-											// 		// 	else if (i == 0 && !(number > 2004 && number < 2022))
-											// 		// 			std::cerr << "Error : in line " << lineNum << " Year not valid\n";
-											// 		// 	else if (i == 1 && !(number > 1 && number < 12))
-											// 		// 			std::cerr << "Error : in line " << lineNum << " Month not valid\n";
-											// 		// 	else if (i == 2 && !(number > 1 && number < 30))
-											// 		// 			std::cerr << "Error : in line " << lineNum << " Day not valid\n";
-											// 		// 	i++;
-											// 		// }
-											// 	}
-											// 	rest = 0;
-											// }
-											// else {
-											// 	double number = strtod((*it).c_str(), &rest);
-											// 	if (*rest || !number) {
-											// 		std::cerr << "Error : in line " << lineNum << " value not a number\n";
-											// 	}
-											// }
-		// }
-	// }
 }
 
+void	parseValue(std::string value, int lineNum)
+{
+	char *rest = 0;
+	double number = strtod(value.c_str(), &rest);
+	if (*rest || (!number && *rest) || !(number >= 0 && number <= 1000)) {
+		std::cout << "Error : in line " << lineNum << " value not valid\n";
+	}
+	
+}
+ 
 void prseLine(std::string line, int lineNum, std::string delimiter)
 {
 	std::list<std::string> date;
 	
 	if (!line.empty()) {
 		std::list<std::string> lineSplit = split(line, delimiter);
-		parseDate(lineSplit, lineNum);
+		if (lineSplit.size() != 2) {
+			std::cerr << "Error : general error in line " << lineNum<< std::endl;
+		}
+		else {
+			trimSpace(*lineSplit.begin());
+			parseDate(*lineSplit.begin(), lineNum, "-"); 
+			parseValue(*++lineSplit.begin(), lineNum); 
+		}
 	}
 }
+
 void parseInputFile(std::list<std::string> inputContant)
 {
 	int i = 0;
@@ -212,6 +160,7 @@ void parseInputFile(std::list<std::string> inputContant)
 		i++;
 	}
 }
+
 int main(int ac, char *av[])
 {
 	if (ac == 2)
