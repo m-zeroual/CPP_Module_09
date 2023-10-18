@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 12:53:33 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/17 20:53:33 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/18 09:38:55 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,17 +70,14 @@ void parseDate(std::string date, int lineNum, std::string delimiter)
 		int i = 0;
 		for (dateSplitIt = dateSplit.begin(); dateSplitIt != dateSplit.end(); dateSplitIt++)
 		{
-			std::cout << "#" << *dateSplitIt << "#" << std::endl;
-			// trimSpace(*dateSplitIt);
+			// std::cout << "#" << *dateSplitIt << "#" << std::endl;
 			long number = strtol((*dateSplitIt).c_str(), &rest, 10);
-			if (*rest || (!number && *rest)) {
+			if (!number && *rest) {
 				std::cerr << "Error : in line " << lineNum << " date not valid\n";
 				break ;
 			}
 			else
 				dateLong[i] = number;
-			// 	dateInt.push_back(number);
-			// std::cout << "$" << number << "$" << std::endl;
 			i++;
 		}
 		i = 0;
@@ -91,28 +88,17 @@ void parseDate(std::string date, int lineNum, std::string delimiter)
 				std::cerr << "Error : in line " << lineNum << " Year not valid\n";
 			else if (i == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 12))
 				std::cerr << "Error : in line " << lineNum << " Month not valid\n";
-			else if (i == 2 && ( !(dateLong[i] >= 1 && dateLong[i] <= 12)
-			|| (dateLong[i - 1] != 2 && dateLong[i - 1] % 2 == 0 && !(dateLong[i] >= 1 && dateLong[i] <= 30))
-			|| (dateLong[i - 1] != 2 && dateLong[i - 1] % 2 == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 31))
-			|| (dateLong[i - 1] == 2 && ((dateLong[i - 2] % 4 == 0 && dateLong[i - 1] == 2 && dateLong[i] >= 30) || 
-										(dateLong[i - 2] % 4 != 0 && dateLong[i - 1] == 2 && dateLong[i] >= 29) )
-			)))
+			else if (i == 2 && (
+				(dateLong[i - 1] != 2 && dateLong[i - 1] <= 7 && ((dateLong[i - 1] % 2 == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 31))
+																|| (dateLong[i - 1] % 2 == 0 && !(dateLong[i] >= 1 && dateLong[i] <= 30))))
+				|| (dateLong[i - 1] != 2 && dateLong[i - 1] >= 8 && ((dateLong[i - 1] % 2 == 0 && !(dateLong[i] >= 1 && dateLong[i] <= 31))
+																|| (dateLong[i - 1] % 2 == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 30))))
+				|| (dateLong[i - 1] == 2 && ((dateLong[i - 2] % 4 == 0 && !(dateLong[i] >= 1 && dateLong[i] <= 29)) 
+										|| (dateLong[i - 2] % 4 != 0 && !(dateLong[i] >= 1 && dateLong[i] <= 28))))
+				|| (dateLong[i - 2] == 2009 && dateLong[i - 1] == 1 && dateLong[i] < 3)
+				))
 				std::cerr << "Error : in line " << lineNum << " Day not valid\n";
 		}
-		
-		// for (dateIntIt = dateInt.begin(); dateIntIt != dateInt.end(); dateIntIt++)
-		// {
-		// 	std::cout << "$" << i << " " <<(*dateIntIt) << "$" << std::endl;
-		// 	if (i == 0 && !((*dateIntIt) >= 2009 && (*dateIntIt) <= 2023) )
-		// 		std::cerr << "Error : in line " << lineNum << " Year not valid\n";
-		// 	else if (i == 1 && (!((*dateIntIt) >= 1 && (*dateIntIt) <= 12)
-		// 	|| ((*(--dateIntIt)++) == 2009 && !((*dateIntIt) >= 1 && (*dateIntIt) <= 12))))
-		// 		std::cerr << "Error : in line " << lineNum << " Month not valid\n";
-		// 	else if (i == 2 && (!((*dateIntIt) >= 1 && (*dateIntIt) <= 30)
-		// 	|| ((*dateIntIt) == 2009 && (*(--dateIntIt)++) == 1 && (*dateIntIt) < 3)))
-		// 		std::cerr << "Error : in line " << lineNum << " Day not valid\n";
-		// 	i++;
-		// }
 	}
 }
 
@@ -120,10 +106,9 @@ void	parseValue(std::string value, int lineNum)
 {
 	char *rest = 0;
 	double number = strtod(value.c_str(), &rest);
-	if (*rest || (!number && *rest) || !(number >= 0 && number <= 1000)) {
+	if ((!number && *rest) || !(number >= 0 && number <= 1000)) {
 		std::cout << "Error : in line " << lineNum << " value not valid\n";
 	}
-	
 }
  
 void prseLine(std::string line, int lineNum, std::string delimiter)
@@ -137,7 +122,8 @@ void prseLine(std::string line, int lineNum, std::string delimiter)
 		}
 		else {
 			trimSpace(*lineSplit.begin());
-			parseDate(*lineSplit.begin(), lineNum, "-"); 
+			parseDate(*lineSplit.begin(), lineNum, "-");
+			trimSpace(*++lineSplit.begin());
 			parseValue(*++lineSplit.begin(), lineNum); 
 		}
 	}
