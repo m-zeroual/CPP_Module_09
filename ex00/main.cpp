@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 12:53:33 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/18 14:02:57 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/18 22:03:55 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int		isNumber(std::string number)
 	return (1);
 }
 
-int	parseDate(std::string date, std::string delimiter)
+int		parseDate(std::string date, std::string delimiter)
 {
 	std::list<std::string>				dateSplit;
 	std::list<std::string>::iterator	dateSplitIt;
@@ -64,38 +64,28 @@ int	parseDate(std::string date, std::string delimiter)
 	rest = 0;
 	dateSplit = split(date, delimiter);
 	if (dateSplit.size() != 3)
-		// std::cerr << "Error : in line " << lineNum << " date not valid\n";
 		return (0);
 	else {
 		int i = 0;
 		for (dateSplitIt = dateSplit.begin(); dateSplitIt != dateSplit.end(); dateSplitIt++)
 		{
 			// std::cout << "#" << *dateSplitIt << "#" << std::endl;
-			if (!isNumber(*dateSplitIt)) {
-				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+			if (!isNumber(*dateSplitIt)) 
 				return (0);
-			}
 			long number = strtol((*dateSplitIt).c_str(), &rest, 10);
-			if (!number && *rest) {
-				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+			if (!number && *rest) 
 				return (0);
-			}
-			else
-				dateLong[i] = number;
+			dateLong[i] = number;
 			i++;
 		}
 		i = 0;
 		for (size_t i = 0; i < 3; i++)
 		{
 			// std::cout << "$" << dateLong[i] << "$" << std::endl;
-			if (i == 0 && !(dateLong[i] >= 2009 && dateLong[i] <= 2023) ) {
-				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+			if (i == 0 && !(dateLong[i] >= 2009 && dateLong[i] <= 2023)) 
 				return (0);
-			}
-			else if (i == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 12)) {
-				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+			else if (i == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 12)) 
 				return (0);
-			}
 			else if (i == 2 && (
 				(dateLong[i - 1] != 2 && dateLong[i - 1] <= 7 && ((dateLong[i - 1] % 2 == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 31))
 																|| (dateLong[i - 1] % 2 == 0 && !(dateLong[i] >= 1 && dateLong[i] <= 30))))
@@ -105,76 +95,85 @@ int	parseDate(std::string date, std::string delimiter)
 										|| (dateLong[i - 2] % 4 != 0 && !(dateLong[i] >= 1 && dateLong[i] <= 28))))
 				|| (dateLong[i - 2] == 2009 && dateLong[i - 1] == 1 && dateLong[i] < 3)
 				))
-				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
 				return (0);
 		}
 	}
 	return (1);
 }
 
-void	parseValue(std::string value, int lineNum, int min, int max, std::string fileName)
+int		parseValue(std::string value, int min, int max)
 {
 	char *rest = 0;
 	double number = strtod(value.c_str(), &rest);
-	if ((!number && *rest) || !(number >= min && number <= max)) {
-		std::cerr << "Error : in file " << fileName << " line " << lineNum << " value not valid >> " << value << std::endl;
-	}
+	if ((!number && *rest) || !(number >= min && number <= max))
+		return (0);
+	return (1);
 }
  
-void	prseLine(std::string line, int lineNum, std::string delimiter, int min, int max, std::string fileName)
+void	prseLine(BitcoinExchange& obj, int line)
 {
-	std::list<std::string> date;
+	// std::list<std::string> date;
+	std::string date;
+	std::string value;
 	
-	if (!line.empty()) {
-		std::list<std::string> lineSplit = split(line, delimiter);
-		if (lineSplit.size() != 2) {
-			std::cerr << "Error : in file " << fileName << " line " << lineNum << " syntax error " << line << std::endl;
-		}
-		else {
-			trimSpace(*lineSplit.begin());
-			if (!parseDate(*lineSplit.begin(), "-"))
-				std::cerr << "Error : in file " << fileName << " line " << lineNum << " date not valid >> " << *lineSplit.begin() << std::endl;
+	for (std::list<std::string>::iterator it = (obj.getContent()).begin(); it !=  (obj.getContent()).end(); it++)
+	{
+		if (!(*it).empty()) {
+			std::list<std::string> lineSplit = split(*it, obj.getDelimiter());
+			date = *lineSplit.begin();
+			value = *++lineSplit.begin();
+			if (lineSplit.size() != 2)
+				std::cerr << "Error : in file " << obj.getName() << " line " << line << " syntax error " << value << std::endl;
 			else {
-				trimSpace(*++lineSplit.begin());
-				parseValue(*++lineSplit.begin(), lineNum, min, max, fileName); 
+				trimSpace(date);
+				if (!parseDate(date, "-"))
+					std::cerr << "Error : in file " << obj.getName() << " line " << line << " date not valid >> " << date << std::endl;
+				else {
+					trimSpace(value);
+					// if (!parseValue(value, obj.getMin(), obj.getMax()))
+					// 	std::cerr << "Error : in file " << obj.getName() << " line " << obj.getName() << " value not valid >> " << value << std::endl;
+				}
 			}
 		}
+		obj.pushDate(date);
+		obj.pushValue(value);
 	}
 }
 
-void	parseFile(std::list<std::string> input, std::string delimiter, std::string date, std::string value, std::string fileName)
+void	parseFile(BitcoinExchange& obj)
 {
 	int i = 0;
-	std::list<std::string>::iterator first = input.begin();
-	for (std::list<std::string>::iterator it = first; it != input.end(); it++)
+	std::list<std::string>::iterator first = (obj.getContent()).begin();
+	for (std::list<std::string>::iterator it = first; it != (obj.getContent()).end(); it++)
 	{
 		if (it == first) {
-			std::list<std::string> head = split(*it, delimiter);
+			std::list<std::string> head = split(*it, obj.getDelimiter());
 			if (head.size() == 2) {
 				for (std::list<std::string>::iterator it = head.begin(); it != head.end(); it++) {
 					trimSpace(*it);
-					if (*it != date && *it != value)
-						std::cerr << "Error : in file " << fileName << " in the first line\n";
+					if (*it != "date" && *it != obj.getType())
+						std::cerr << "Error : in file " << obj.getName() << " in the first line\n";
 				}
 			}
 			else
-				std::cerr << "Error : in file " << fileName << " in the first line\n";
-
+				std::cerr << "Error : in file " << obj.getName() << " in the first line\n";
 		}
-		else if (delimiter == "|")
-			prseLine(*it, i, delimiter, 0, 1000, fileName);
-		else if (delimiter == ",")
-			prseLine(*it, i, delimiter, 0, INT_MAX, fileName);
+		else if (obj.getDelimiter() == "|")
+			prseLine(obj, i);
+		else if (obj.getDelimiter() == ",")
+			prseLine(obj, i);
 		i++;
 	}
 }
 
-int main(int ac, char *av[])
+int		main(int ac, char *av[])
 {
+	BitcoinExchange input(av[1], "value", "|");
+	// BitcoinExchange data("data.csv", ",", "exchange_rate");
 	if (ac == 2)
 	{
-		std::list<std::string> input;
-		std::list<std::string> data;
+		// std::list<std::string> input;
+		// std::list<std::string> data;
 		std::string content;
 		
 		std::ifstream infile;
@@ -189,16 +188,21 @@ int main(int ac, char *av[])
 				std::cout << "Error : file " << av[1] << " not found\n";
 			else {                      
 				datafile.close();
-				while (std::getline(infile, content, '\n')) {
-					input.push_back(content);
-				}
-				while (std::getline(datafile, content, '\n')) {
-					data.push_back(content);
-				}
-				parseFile(data, ",", "date", "exchange_rate", "data.csv");
-				parseFile(input, "|", "date", "value", av[1]);
+				while (std::getline(infile, content, '\n'))
+					input.pushContent(content);
+				std::list<std::string> inputt = input.getContent();
+				// for (std::list<std::string>::iterator it = inputt.begin(); it != inputt.end(); it++)
+				// {
+				// 	std::cout << *it << std::endl;
+				// }
+				
+				// while (std::getline(datafile, content, '\n')) {
+				// 	data.pushLine(content);
+				// }
+				// parseFile(data, ",", "date", "exchange_rate", "data.csv");
+				parseFile(input);
 				infile.close();	
-			}                   
+			}
 			datafile.close();
 		}
 	}
