@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 12:53:33 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/18 11:45:24 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/18 14:02:57 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int		isNumber(std::string number)
 	return (1);
 }
 
-void	parseDate(std::string date, int lineNum, std::string delimiter)
+int	parseDate(std::string date, std::string delimiter)
 {
 	std::list<std::string>				dateSplit;
 	std::list<std::string>::iterator	dateSplitIt;
@@ -64,20 +64,21 @@ void	parseDate(std::string date, int lineNum, std::string delimiter)
 	rest = 0;
 	dateSplit = split(date, delimiter);
 	if (dateSplit.size() != 3)
-		std::cerr << "Error : in line " << lineNum << " date not valid\n";
+		// std::cerr << "Error : in line " << lineNum << " date not valid\n";
+		return (0);
 	else {
 		int i = 0;
 		for (dateSplitIt = dateSplit.begin(); dateSplitIt != dateSplit.end(); dateSplitIt++)
 		{
 			// std::cout << "#" << *dateSplitIt << "#" << std::endl;
 			if (!isNumber(*dateSplitIt)) {
-				std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
-				return ;
+				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+				return (0);
 			}
 			long number = strtol((*dateSplitIt).c_str(), &rest, 10);
 			if (!number && *rest) {
-				std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
-				return ;
+				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+				return (0);
 			}
 			else
 				dateLong[i] = number;
@@ -88,12 +89,12 @@ void	parseDate(std::string date, int lineNum, std::string delimiter)
 		{
 			// std::cout << "$" << dateLong[i] << "$" << std::endl;
 			if (i == 0 && !(dateLong[i] >= 2009 && dateLong[i] <= 2023) ) {
-				std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
-				return ;
+				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+				return (0);
 			}
 			else if (i == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 12)) {
-				std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
-				return ;
+				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+				return (0);
 			}
 			else if (i == 2 && (
 				(dateLong[i - 1] != 2 && dateLong[i - 1] <= 7 && ((dateLong[i - 1] % 2 == 1 && !(dateLong[i] >= 1 && dateLong[i] <= 31))
@@ -104,39 +105,44 @@ void	parseDate(std::string date, int lineNum, std::string delimiter)
 										|| (dateLong[i - 2] % 4 != 0 && !(dateLong[i] >= 1 && dateLong[i] <= 28))))
 				|| (dateLong[i - 2] == 2009 && dateLong[i - 1] == 1 && dateLong[i] < 3)
 				))
-				std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+				// std::cerr << "Error : in line " << lineNum << " date not valid >> " << date << std::endl;
+				return (0);
 		}
 	}
+	return (1);
 }
 
-void	parseValue(std::string value, int lineNum, int min, int max)
+void	parseValue(std::string value, int lineNum, int min, int max, std::string fileName)
 {
 	char *rest = 0;
 	double number = strtod(value.c_str(), &rest);
 	if ((!number && *rest) || !(number >= min && number <= max)) {
-		std::cerr << "Error : in line " << lineNum << " value not valid >> " << value << std::endl;
+		std::cerr << "Error : in file " << fileName << " line " << lineNum << " value not valid >> " << value << std::endl;
 	}
 }
  
-void	prseLine(std::string line, int lineNum, std::string delimiter, int min, int max)
+void	prseLine(std::string line, int lineNum, std::string delimiter, int min, int max, std::string fileName)
 {
 	std::list<std::string> date;
 	
 	if (!line.empty()) {
 		std::list<std::string> lineSplit = split(line, delimiter);
 		if (lineSplit.size() != 2) {
-			std::cerr << "Error : in line " << lineNum << " syntax error " << line << std::endl;
+			std::cerr << "Error : in file " << fileName << " line " << lineNum << " syntax error " << line << std::endl;
 		}
 		else {
 			trimSpace(*lineSplit.begin());
-			parseDate(*lineSplit.begin(), lineNum, "-");
-			trimSpace(*++lineSplit.begin());
-			parseValue(*++lineSplit.begin(), lineNum, min, max); 
+			if (!parseDate(*lineSplit.begin(), "-"))
+				std::cerr << "Error : in file " << fileName << " line " << lineNum << " date not valid >> " << *lineSplit.begin() << std::endl;
+			else {
+				trimSpace(*++lineSplit.begin());
+				parseValue(*++lineSplit.begin(), lineNum, min, max, fileName); 
+			}
 		}
 	}
 }
 
-void	parseFile(std::list<std::string> input, std::string delimiter, std::string date, std::string value)
+void	parseFile(std::list<std::string> input, std::string delimiter, std::string date, std::string value, std::string fileName)
 {
 	int i = 0;
 	std::list<std::string>::iterator first = input.begin();
@@ -148,18 +154,17 @@ void	parseFile(std::list<std::string> input, std::string delimiter, std::string 
 				for (std::list<std::string>::iterator it = head.begin(); it != head.end(); it++) {
 					trimSpace(*it);
 					if (*it != date && *it != value)
-						std::cerr << "Error : in head of input file\n";
+						std::cerr << "Error : in file " << fileName << " in the first line\n";
 				}
 			}
 			else
-				std::cerr << "Error : in head of input file\n";
+				std::cerr << "Error : in file " << fileName << " in the first line\n";
+
 		}
 		else if (delimiter == "|")
-			prseLine(*it, i, delimiter, 0, 1000);
+			prseLine(*it, i, delimiter, 0, 1000, fileName);
 		else if (delimiter == ",")
-			prseLine(*it, i, delimiter, 0, INT_MAX);
-		// if (i == 2)
-		// 	break ;
+			prseLine(*it, i, delimiter, 0, INT_MAX, fileName);
 		i++;
 	}
 }
@@ -174,22 +179,27 @@ int main(int ac, char *av[])
 		
 		std::ifstream infile;
 		std::ifstream datafile;
-		infile.open(av[1]);
+
 		datafile.open("data.csv");
-		if (!infile || !datafile) {                            
-			std::cout << "Error : opening the file\n";          
-		}
+		if (!datafile) 
+			std::cout << "Error : data file not found\n";
 		else {
-			while (std::getline(infile, content, '\n')) {
-				input.push_back(content);
-			}
-			while (std::getline(datafile, content, '\n')) {
-				data.push_back(content);
-			}
-			// parseFile(data, ",", "date", "exchange_rate");
-			parseFile(input, "|", "date", "value");
-			infile.close();                   
-			datafile.close();                   
+			infile.open(av[1]);
+			if (!infile)
+				std::cout << "Error : file " << av[1] << " not found\n";
+			else {                      
+				datafile.close();
+				while (std::getline(infile, content, '\n')) {
+					input.push_back(content);
+				}
+				while (std::getline(datafile, content, '\n')) {
+					data.push_back(content);
+				}
+				parseFile(data, ",", "date", "exchange_rate", "data.csv");
+				parseFile(input, "|", "date", "value", av[1]);
+				infile.close();	
+			}                   
+			datafile.close();
 		}
 	}
 	else
