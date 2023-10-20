@@ -6,11 +6,11 @@
 #    By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/10/15 12:47:37 by mzeroual          #+#    #+#              #
-#    Updated: 2023/10/15 12:53:25 by mzeroual         ###   ########.fr        #
+#    Updated: 2023/10/19 22:42:51 by mzeroual         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = main.cpp
+SRCS = main.cpp BitcoinExchange.cpp
 
 OBJS = $(SRCS:.cpp=.o)
 

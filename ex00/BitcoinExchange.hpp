@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/15 12:54:10 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/18 21:55:35 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/20 07:46:13 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,93 +14,24 @@
 #define BITCOINEXCHANGE_HPP
 
 #include <iostream>
-#include <list>
 #include <fstream>
+#include <list>
 
-class BitcoinExchange : public std::list<std::string>
+typedef struct t_data
 {
-private:
-    std::list<std::string>  content;
-    std::list<std::string>  date;
-    std::list<std::string>  value;
-    std::string             name;
-    std::string             delimiter;
-    std::string             type;
-    int                     minValue;
-    int                     maxValue;
-public:
-    void pushContent(const std::string &content)
-    {
-        this->content.push_back(content);
-    }
-    void pushDate(const std::string &content)
-    {
-        this->date.push_back(content);
-    }
-    void pushValue(const std::string &content)
-    {
-        this->value.push_back(content);
-    }
-    void setName(const std::string &name)
-    {
-        this->name = name;
-    }
-    void setDelimiter(const std::string &delimiter)
-    {
-        this->delimiter = delimiter;
-    }
-    void setType(const std::string &type)
-    {
-        this->delimiter = type;
-    }
+    std::string date;
+    std::string value;
+} _data;
 
 
-    std::list<std::string>& getContent( void )
-    {
-        return (content);
-    }
-    const std::list<std::string>& getDate( void ) const
-    {
-        return (date);
-    }
-    const std::list<std::string>& getValue( void ) const
-    {
-        return (value);
-    }
-    const std::string& getName( void ) const
-    {
-        return (name);
-    }
-    const std::string& getDelimiter( void ) const
-    {
-        return (delimiter);
-    }
-    const std::string& getType( void ) const
-    {
-        return (type);
-    }
-    
-    BitcoinExchange( void );
-    ~BitcoinExchange( void );
-    BitcoinExchange(  std::string name, std::string type, std::string delimiter  );
-    
-};
-
-BitcoinExchange::BitcoinExchange( void ) : content(0), date(0), value(0), name(0), delimiter(0), type(0), minValue(0), maxValue(1000)
-{
-}
-BitcoinExchange::BitcoinExchange( std::string name, std::string type, std::string delimiter) : content(0), date(0), value(0), name(name), delimiter(delimiter), type(type)
-{
-    minValue = 0;
-    maxValue = 0;
-}
-
-BitcoinExchange::~BitcoinExchange( void )
-{
-}
+// Comman function
+std::list<std::string>	split(std::string line, std::string delimiter);
+std::string				trimSpace(std::string remove);
+int						isNumber(std::string number);
+int						parseDate(std::string date);
+int						parseValue(std::string value, int min, int max);
 
 
-
-
+int 					parseLine(std::string line, std::string delimiter, int i, std::list<_data> &liste);
 
 #endif
