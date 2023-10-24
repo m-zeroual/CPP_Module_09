@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/24 10:34:41 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/24 20:23:40 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,16 @@ int parse(char *av)
         return (std::cout << "Error : not a positive number.\n", 0);
     return (1);
 }
-void display(std::vector <int> d)
+void display(std::vector <int> d, std::string s)
 {
+    if (!s.empty())
+        std::cout << s ;
     for (size_t i = 0; i < d.size(); i++)
     {
         std::cout << d[i] << " ";
     }
+    // if (a)
+        std::cout << "\n";
         
     
 }
@@ -89,9 +93,9 @@ void swapPair(pair &p)
     p.first = swap.first;
     p.second = swap.second;
 }
-void merge(vPair &vpairs)
+void merge(vPair &vpairs, pair &rest)
 {
-    pair    rest;
+    pair    swap;
     vPair   p;
     
     size_t size = (int)(vpairs.size() / 2) * 2;
@@ -105,15 +109,18 @@ void merge(vPair &vpairs)
         }
         if (vpairs[i + 1].second.back() < vpairs[i].second.back())
             std::swap(vpairs[i], vpairs[i + 1]);
-        rest.first = group(vpairs[i]);
-        rest.second = group(vpairs[i + 1]);
-        p.push_back(rest);
+        swap.first = group(vpairs[i]);
+        swap.second = group(vpairs[i + 1]);
+        p.push_back(swap);
     }
 
     if (size != vpairs.size())
     {
         if (vpairs[i].second.back() < vpairs[i].first.back())
             swapPair(vpairs[i]);
+        // display(vpairs[i].first ,"");
+        // display(vpairs[i].second ,"");
+        
         rest = vpairs[i];
         
         // std::cout << "rest : {";
@@ -138,81 +145,104 @@ bool comp(std::vector<int> a, std::vector<int> b)
 {
     return (a.back() < b.back());
 }
-void insertion(vPair &vpairs)
+bool comp1(pair a, pair b)
+{
+    return (a.second.back() < b.second.back());
+}
+void insertion(vPair &vpairs, pair rest)
 {
     vPair   tmp;
-    vPair   mchain;
+    size_t size;
+    std::vector< std::vector<int> >   mchain;
+    std::vector< std::vector<int> >   paned;
     pair    pair;
-
-        size_t size = vpairs.size();
+        
+    // size_t size = mchain.size() / 2 * 2;
+    size = vpairs.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        tmp.push_back(group(vpairs[i].first));
+        tmp.push_back(group(vpairs[i].second));
+    }
+    if (!rest.first.empty())
+    {
+        vPair::iterator pos = std::lower_bound(tmp.begin(), tmp.end(), rest, comp1);
+        tmp.insert(pos, rest);
+        // tmp.push_back(rest);
+        // tmp.push_back(group(rest.second));
+        // mchain.push_back(rest.second);
+    }
+    // rest.first.clear();
+    // rest.second.clear();
+    vpairs = tmp;
+    // for (size_t i = 0; i < vpairs.size(); i++)
+    // {
+    //     display(vpairs[i].first, "");
+    //     display(vpairs[i].second, "");
+    // }
+            
+        size = vpairs.size();
         for (size_t i = 0; i < size; i++)
         {
-            // std::cout << "after push : ";
-            // for (size_t j = 0; j < vpairs[i].second.size(); j++)
-            // {
-                // std::cout << i << "\n";
-            // }
-                // pair.first = vpairs[i].second;
-                // pair.second = vpairs[i + 1].second;
-                tmp.push_back(group(vpairs[i].first));
-                tmp.push_back(group(vpairs[i].second));
-                
-                // display(mchain[i].first);
-                // display(mchain[i].second);
-                // std::cout << "\n";
-                // display(mchain[i].second);
-            // std::cout << "main chain is : ";
-            // for (size_t i = 0; i < mchain.size(); i++)
-            // {
-            //     for (size_t j = 0; j < mchain[j].size(); j++)
-            //     {
-            //         std::cout << mchain[i][j] << " ";
-            //     }
-                
-            // }
-            // std::cout << "\n";
+            paned.push_back(vpairs[i].first);
+            mchain.push_back(vpairs[i].second);
             
+        //     display(paned[i], "paned : ");
+        //     display(mchain[i], "mchain : ");
         }
-        vpairs = tmp;
-        for (vPair::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
-        {
-            std::cout << "{";
-            for (size_t i = 0; i < (*it).first.size(); i++)
-                std::cout << (*it).first[i] << " ";
-            std::cout << ":";
-            for (size_t i = 0; i < (*it).second.size(); i++)
-                std::cout << (*it).second[i] << " ";
-            std::cout << "},";
-        }
-        std::cout << std::endl;
-        // for (size_t i = 0; i < size; i++)
-        // {
-        //     std::vector<std::vector<int> >::iterator pos = std::lower_bound(mchain.begin(), mchain.end(), vpairs[i].first, comp);
-        //     for (std::vector<std::vector<int> >::iterator  it = mchain.begin(); it < mchain.end(); it++)
-        //     {
-        //         if (it == pos)
-        //         {
-        //             mchain.insert(it, vpairs[i].first);
-        //         }
-        //     } 
+        // if (!rest.first.empty()) {
+        // paned.push_back(rest.first);
+        // mchain.push_back(rest.second);
         // }
-        //     std::cout << "main chain is : ";
-        //     for (size_t i = 0; i < mchain.size(); i++)
-        //     {
-        //         for (size_t j = 0; j < mchain[i].size(); j++)
-        //         {
-        //             std::cout << mchain[i][j] << " ";
-        //         }
-                
-        //     }
-        //     std::cout << "\n";
-        
+        // std::cout << paned.size() << "\n";
+        // std::cout << mchain.size() << "\n";
+        for (size_t i = 0; i < paned.size(); i++)
+        {
+            std::vector<std::vector<int> >::iterator pos = std::lower_bound(mchain.begin(), mchain.end(), paned[i], comp);
+            mchain.insert(pos, paned[i]);
+            // std::vector<std::vector<int> >::iterator pos = std::lower_bound(mchain.begin(), mchain.end(), , comp);
+            // mchain.insert(pos, paned[i]);
+            // for (size_t i = 0; i < rest.first.size(); i++)
+            // {
+            //     std::cout << "#\n";
+            //     display(rest.first, "");
+            //     display(rest.second, "");
+            //     std::cout << "#\n";
+            //     std::cout << "\n";
+            // }
+            
+            // pos = std::lower_bound(mchain.begin(), mchain.end(), group(rest), comp);
+            // mchain.insert(pos, group(rest));
+            // display(mchain[i], "");
+
+        }
+        // for (size_t i = 0; i < mchain.size(); i++)
+        // {
+        //     display(mchain[i], "");
+        // }
+
+        tmp.clear();
+        for (size_t i = 0; i < mchain.size(); i+=2)
+        {
+            // display(mchain[i] ,"main chain : ");
+            // std::cout << i << "\n";
+            pair.first = mchain[i];
+            pair.second = mchain[i + 1];
+            tmp.push_back(pair);
+        }
+    vpairs = tmp;
+    // for (size_t i = 0; i < vpairs.size(); i++)
+    // {
+    //     display(vpairs[i].first, "");
+    //     display(vpairs[i].second, "");
+    //     std::cout << "\n";
     // }
 }
 
 void rec(vPair &vpairs)
 {
     vPair   pairs(vpairs);
+    pair   rest;
     vpairs.clear();
     std::cout << "before\n";
     for (std::vector<pair >::iterator it = pairs.begin(); it != pairs.end() ; it++)
@@ -228,7 +258,7 @@ void rec(vPair &vpairs)
     std::cout << std::endl;
     std::cout << "----------------------------------------------" << std::endl;
 
-    merge(pairs);
+    merge(pairs, rest);
 
     std::cout << "after\n";
     for (std::vector<pair>::iterator it = pairs.begin(); it != pairs.end() ; it++)
@@ -276,7 +306,8 @@ void rec(vPair &vpairs)
     //     std::cout << "},";
     // }
     // std::cout << std::endl;
-    insertion(vpairs);
+    insertion(vpairs, rest);
+
 
     // return (pairs);
 }
@@ -310,18 +341,18 @@ int main(int ac, char *av[])
             std::cout << "rest : " << rest.back() << std::endl;
         // std::cout << "here\n";
         rec(vpairs);
-            std::cout << "after\n";
-        // for (std::vector<pair>::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
-        // {
-        //     std::cout << "{";
-        //     for (size_t i = 0; i < (*it).first.size(); i++)
-        //         std::cout << (*it).first[i] << " ";
-        //     std::cout << ":";
-        //     for (size_t i = 0; i < (*it).second.size(); i++)
-        //         std::cout << (*it).second[i] << " ";
-        //     std::cout << "},";
-        // }
-        // std::cout << std::endl; 
+            // std::cout << "after\n";
+        for (std::vector<pair>::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+        {
+            std::cout << "{";
+            for (size_t i = 0; i < (*it).first.size(); i++)
+                std::cout << (*it).first[i] << " ";
+            std::cout << ":";
+            for (size_t i = 0; i < (*it).second.size(); i++)
+                std::cout << (*it).second[i] << " ";
+            std::cout << "},";
+        }
+        std::cout << std::endl; 
     }
     else
         std::cout << "give me positive numbers to sort.\n";
