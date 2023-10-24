@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/24 20:31:46 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/24 20:48:42 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,7 @@ void rec(vPair &vpairs)
 	merge(pairs, rest);
 
 	vpairs = pairs;
-	if (vpairs.size() != 1)
+	if (vpairs.size() && vpairs.size() != 1)
 		rec(vpairs);
 	insertion(vpairs, rest);
 }
@@ -205,17 +205,17 @@ int main(int ac, char *av[])
 			std::cout << "rest : " << rest.back() << std::endl;
 
 		rec(vpairs);
-		// for (std::vector<pair>::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
-		// {
-		// 	std::cout << "{";
-		// 	for (size_t i = 0; i < (*it).first.size(); i++)
-		// 		std::cout << (*it).first[i] << " ";
-		// 	std::cout << ":";
-		// 	for (size_t i = 0; i < (*it).second.size(); i++)
-		// 		std::cout << (*it).second[i] << " ";
-		// 	std::cout << "},";
-		// }
-		// std::cout << std::endl; 
+		for (std::vector<pair>::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+		{
+			std::cout << "{";
+			for (size_t i = 0; i < (*it).first.size(); i++)
+				std::cout << (*it).first[i] << " ";
+			std::cout << ":";
+			for (size_t i = 0; i < (*it).second.size(); i++)
+				std::cout << (*it).second[i] << " ";
+			std::cout << "},";
+		}
+		std::cout << std::endl; 
 	}
 	else
 		std::cout << "give me positive numbers to sort.\n";
