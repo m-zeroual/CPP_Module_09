@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/24 20:48:42 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/24 21:39:33 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,11 @@ int parse(char *av)
 		return (std::cout << "Error : not a positive number.\n", 0);
 	return (1);
 }
-void display(std::vector <int> d, std::string s)
+void display(std::vector <int> d)
 {
-	if (!s.empty())
-		std::cout << s ;
 	for (size_t i = 0; i < d.size(); i++)
-	{
 		std::cout << d[i] << " ";
-	}
-	// if (a)
-		std::cout << "\n";
-		
-	
+	std::cout << "\n";
 }
 vPair convertToPair(vVector numbers, std::vector<int> &rest)
 {
@@ -176,9 +169,20 @@ void rec(vPair &vpairs)
 		rec(vpairs);
 	insertion(vpairs, rest);
 }
+std::vector<int> convertFromPairToVector(vPair vP)
+{
+	std::vector<int> v; 
+	for (size_t i = 0; i < vP.size(); i++)
+	{
+		v.push_back(vP[i].first[0]);
+		v.push_back(vP[i].second[0]);
+	}
+	return (v);
+}
 
 int main(int ac, char *av[])
 {
+	std::vector<int>    sortedN;
 	std::vector<int>    rest;
 	std::vector<int>    number;
 	
@@ -205,17 +209,19 @@ int main(int ac, char *av[])
 			std::cout << "rest : " << rest.back() << std::endl;
 
 		rec(vpairs);
-		for (std::vector<pair>::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
-		{
-			std::cout << "{";
-			for (size_t i = 0; i < (*it).first.size(); i++)
-				std::cout << (*it).first[i] << " ";
-			std::cout << ":";
-			for (size_t i = 0; i < (*it).second.size(); i++)
-				std::cout << (*it).second[i] << " ";
-			std::cout << "},";
-		}
-		std::cout << std::endl; 
+		sortedN = convertFromPairToVector(vpairs);
+		display(sortedN);
+		// for (std::vector<pair>::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+		// {
+		// 	std::cout << "{";
+		// 	for (size_t i = 0; i < (*it).first.size(); i++)
+		// 		std::cout << (*it).first[i] << " ";
+		// 	std::cout << ":";
+		// 	for (size_t i = 0; i < (*it).second.size(); i++)
+		// 		std::cout << (*it).second[i] << " ";
+		// 	std::cout << "},";
+		// }
+		// std::cout << std::endl; 
 	}
 	else
 		std::cout << "give me positive numbers to sort.\n";
