@@ -6,12 +6,11 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/22 18:38:17 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/24 10:34:41 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-typedef std::pair< std::vector<int>, std::vector<int> > pair;
 
 int parse(char *av)
 {
@@ -23,11 +22,19 @@ int parse(char *av)
         return (std::cout << "Error : not a positive number.\n", 0);
     return (1);
 }
-
-std::vector<pair> convertToPair(std::vector<std::vector<int> > numbers, std::vector<int> &rest)
+void display(std::vector <int> d)
 {
-    std::vector<pair>   pairs;
-    pair                p;
+    for (size_t i = 0; i < d.size(); i++)
+    {
+        std::cout << d[i] << " ";
+    }
+        
+    
+}
+vPair convertToPair(vVector numbers, std::vector<int> &rest)
+{
+    vPair   pairs;
+    pair    p;
     size_t size = numbers.size() / 2 * 2;
     for (size_t i = 0; i < size; i += 2)
     {
@@ -41,7 +48,7 @@ std::vector<pair> convertToPair(std::vector<std::vector<int> > numbers, std::vec
 }
 
 
-std::vector<int> groupPair(pair p)
+std::vector<int> group(pair p)
 {
     std::vector<int> v;
     for (size_t i = 0; i < p.first.size(); i++)
@@ -54,68 +61,161 @@ std::vector<int> groupPair(pair p)
     }
     return (v);
 }
-std::vector<pair> merge(std::vector<pair> &vpairs)
+pair group(std::vector<int> v)
 {
-    std::vector<pair>   pairs;
-    pair                p;
-    pair                swap;
-    pair                rest;
     std::vector<int>    v1;
     std::vector<int>    v2;
+    pair                p;
+    size_t size = v.size();
+    
+    for (size_t i = 0; i < size; i++)
+    {
+        if (i < size / 2)
+            v1.push_back(v[i]);
+        else
+            v2.push_back(v[i]);
+    }
+    p.first = v1;
+    p.second = v2;
+    return (p);
+}
+
+void swapPair(pair &p)
+{
+    pair    swap;
+    
+    swap.first = p.second;
+    swap.second = p.first;
+    p.first = swap.first;
+    p.second = swap.second;
+}
+void merge(vPair &vpairs)
+{
+    pair    rest;
+    vPair   p;
     
     size_t size = (int)(vpairs.size() / 2) * 2;
-    // std::cout << "size : " << size << std::endl;
     size_t i = 0;
     for (i = 0; i < size; i += 2)
     {
-        // if (vpairs[i].second.back() < )
-        if (vpairs[i].second.back() < vpairs[i].first.back())
+        for (size_t j = 0; j < 2; j++)
         {
-            swap.first = vpairs[i].second;
-            swap.second = vpairs[i].first;
-            vpairs[i].first = swap.first;
-            vpairs[i].second = swap.second;
+            if (vpairs[(i + j)].second.back() < vpairs[i + j].first.back())
+                swapPair(vpairs[i + j]);
         }
-        if (vpairs[i + 1].second.back() < vpairs[i + 1].first.back())
-        {
-            swap.first = vpairs[i + 1].second;
-            swap.second = vpairs[i + 1].first;
-            vpairs[i + 1].first = swap.first;
-            vpairs[i + 1].second = swap.second;
-        }
-        v1 = groupPair(vpairs[i]);
-        v2 = groupPair(vpairs[i + 1]);
-        p.first = v1;
-        p.second = v2;
-        pairs.push_back(p);
-        // std::cout << i << std::endl;
+        if (vpairs[i + 1].second.back() < vpairs[i].second.back())
+            std::swap(vpairs[i], vpairs[i + 1]);
+        rest.first = group(vpairs[i]);
+        rest.second = group(vpairs[i + 1]);
+        p.push_back(rest);
     }
-    // std::cout << "i " << i << std::endl;
-    if (i && size != vpairs.size())
+
+    if (size != vpairs.size())
     {
         if (vpairs[i].second.back() < vpairs[i].first.back())
-        {
-            rest.second = vpairs[i].first;
-            rest.first = vpairs[i].second;
-            std::cout << "rest " << rest.first.back() << " " << rest.second.back() << std::endl;
-        }
+            swapPair(vpairs[i]);
+        rest = vpairs[i];
+        
+        // std::cout << "rest : {";
+        // for (size_t i = 0; i < rest.first.size(); i++)
         // {
-        //     swap.first = vpairs[i - 1].second;
-        //     swap.second = vpairs[i - 1].first;
-        //     vpairs[i - 1].first = swap.first;
-        //     vpairs[i - 1].second = swap.second;
+        //     std::cout << rest.first[i] << " ";
         // }
+        // std::cout << " : ";
+        // for (size_t i = 0; i < rest.second.size(); i++)
+        // {
+        //     std::cout << rest.second[i] << " ";
+        // }
+        // // std::cout << rest.first.back();
+        // std::cout << "}\n";
     }
-    return (pairs);
+    // vpairs.clear();
+    vpairs = p;
+    // return (pairs);
 }
 
-std::vector<pair> rec(std::vector<pair> vpairs)
+bool comp(std::vector<int> a, std::vector<int> b)
 {
-    std::vector<pair>   pairs;
+    return (a.back() < b.back());
+}
+void insertion(vPair &vpairs)
+{
+    vPair   tmp;
+    vPair   mchain;
+    pair    pair;
 
-    pairs = merge(vpairs);
-    // pairs = sort(vpairs);
-    for (std::vector<pair >::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+        size_t size = vpairs.size();
+        for (size_t i = 0; i < size; i++)
+        {
+            // std::cout << "after push : ";
+            // for (size_t j = 0; j < vpairs[i].second.size(); j++)
+            // {
+                // std::cout << i << "\n";
+            // }
+                // pair.first = vpairs[i].second;
+                // pair.second = vpairs[i + 1].second;
+                tmp.push_back(group(vpairs[i].first));
+                tmp.push_back(group(vpairs[i].second));
+                
+                // display(mchain[i].first);
+                // display(mchain[i].second);
+                // std::cout << "\n";
+                // display(mchain[i].second);
+            // std::cout << "main chain is : ";
+            // for (size_t i = 0; i < mchain.size(); i++)
+            // {
+            //     for (size_t j = 0; j < mchain[j].size(); j++)
+            //     {
+            //         std::cout << mchain[i][j] << " ";
+            //     }
+                
+            // }
+            // std::cout << "\n";
+            
+        }
+        vpairs = tmp;
+        for (vPair::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+        {
+            std::cout << "{";
+            for (size_t i = 0; i < (*it).first.size(); i++)
+                std::cout << (*it).first[i] << " ";
+            std::cout << ":";
+            for (size_t i = 0; i < (*it).second.size(); i++)
+                std::cout << (*it).second[i] << " ";
+            std::cout << "},";
+        }
+        std::cout << std::endl;
+        // for (size_t i = 0; i < size; i++)
+        // {
+        //     std::vector<std::vector<int> >::iterator pos = std::lower_bound(mchain.begin(), mchain.end(), vpairs[i].first, comp);
+        //     for (std::vector<std::vector<int> >::iterator  it = mchain.begin(); it < mchain.end(); it++)
+        //     {
+        //         if (it == pos)
+        //         {
+        //             mchain.insert(it, vpairs[i].first);
+        //         }
+        //     } 
+        // }
+        //     std::cout << "main chain is : ";
+        //     for (size_t i = 0; i < mchain.size(); i++)
+        //     {
+        //         for (size_t j = 0; j < mchain[i].size(); j++)
+        //         {
+        //             std::cout << mchain[i][j] << " ";
+        //         }
+                
+        //     }
+        //     std::cout << "\n";
+        
+    // }
+}
+
+void rec(vPair &vpairs)
+{
+    vPair   pairs(vpairs);
+    vpairs.clear();
+    std::cout << "before\n";
+    for (std::vector<pair >::iterator it = pairs.begin(); it != pairs.end() ; it++)
     {
         std::cout << "{";
         for (size_t i = 0; i < (*it).first.size(); i++)
@@ -126,19 +226,70 @@ std::vector<pair> rec(std::vector<pair> vpairs)
         std::cout << "},";
     }
     std::cout << std::endl;
+    std::cout << "----------------------------------------------" << std::endl;
 
+    merge(pairs);
+
+    std::cout << "after\n";
+    for (std::vector<pair>::iterator it = pairs.begin(); it != pairs.end() ; it++)
+    {
+        std::cout << "{";
+        for (size_t i = 0; i < (*it).first.size(); i++)
+            std::cout << (*it).first[i] << " ";
+        std::cout << ":";
+        for (size_t i = 0; i < (*it).second.size(); i++)
+            std::cout << (*it).second[i] << " ";
+        std::cout << "},";
+    }
+    std::cout << std::endl;
+    
+    // vpairs.clear();
+    // exit(0);
+    // std::cout << std::endl;
+    
+    // pairs = sort(vpairs);
+    // std::cout << "recursion\n";
+    // for (std::vector<pair >::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+    // {
+    //     std::cout << "{";
+    //     for (size_t i = 0; i < (*it).first.size(); i++)
+    //         std::cout << (*it).first[i] << " ";
+    //     std::cout << ":";
+    //     for (size_t i = 0; i < (*it).second.size(); i++)
+    //         std::cout << (*it).second[i] << " ";
+    //     std::cout << "},";
+    // }
+    // std::cout << std::endl;
+
+    vpairs = pairs;
     if (vpairs.size() != 1)
-        rec(pairs);
-    return (pairs);
+        rec(vpairs);
+    // std::cout << "after\n";
+    // for (std::vector<pair >::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+    // {
+    //     std::cout << "{";
+    //     for (size_t i = 0; i < (*it).first.size(); i++)
+    //         std::cout << (*it).first[i] << " ";
+    //     std::cout << ":";
+    //     for (size_t i = 0; i < (*it).second.size(); i++)
+    //         std::cout << (*it).second[i] << " ";
+    //     std::cout << "},";
+    // }
+    // std::cout << std::endl;
+    insertion(vpairs);
+
+    // return (pairs);
 }
 
 int main(int ac, char *av[])
 {
     // std::vector<>
-    std::vector<int>                rest;
-    std::vector<int>                number;
-    std::vector<std::vector<int> >  numbers;
-    std::vector<pair>               vpairs;
+    std::vector<int>    rest;
+    std::vector<int>    number;
+    
+    vVector             numbers;
+    vPair               vpairs;
+    vPair               save;
     pair p;
     if (ac > 1)
     {
@@ -151,12 +302,26 @@ int main(int ac, char *av[])
             numbers.push_back( number );
             number.pop_back();
         }
+        if (numbers.size() == 1)
+            return (std::cout << numbers[0].back() << std::endl, 0);
 
         vpairs = convertToPair(numbers, rest);
         if (!rest.empty())
-            std::cout << "mmmmmm" << rest.back() << std::endl;
+            std::cout << "rest : " << rest.back() << std::endl;
         // std::cout << "here\n";
-        vpairs = rec(vpairs);        
+        rec(vpairs);
+            std::cout << "after\n";
+        // for (std::vector<pair>::iterator it = vpairs.begin(); it != vpairs.end() ; it++)
+        // {
+        //     std::cout << "{";
+        //     for (size_t i = 0; i < (*it).first.size(); i++)
+        //         std::cout << (*it).first[i] << " ";
+        //     std::cout << ":";
+        //     for (size_t i = 0; i < (*it).second.size(); i++)
+        //         std::cout << (*it).second[i] << " ";
+        //     std::cout << "},";
+        // }
+        // std::cout << std::endl; 
     }
     else
         std::cout << "give me positive numbers to sort.\n";
