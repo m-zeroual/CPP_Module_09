@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/28 18:19:03 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/28 18:30:23 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,6 @@ vPair insertion(std::vector<int> &v)
 	std::vector<int>	v1;
 	std::vector<int>	v2;
 
-	// size_t c = pow(2, mergeCount--);
 	size_t c = 1 << mergeCount--;
 
 	size_t size = v.size() / c * c;
@@ -151,9 +150,6 @@ void recursion(std::vector<int> &v)
 		mchain.insert(std::lower_bound(mchain.begin(), mchain.end(), paned[i], comp), paned[i]);
 
 	v = convertToVector(mchain);
-	// display(v);
-	// std::cout << "\n";
-	// std::cout << "\n";
 }
 std::vector<int> convertFromPairToVector(vPair vP)
 {
@@ -188,9 +184,9 @@ int main(int ac, char *av[])
 			numbers.push_back(std::atoi(av[i]));
 		}
 		recursion(numbers);
-		std::cout << "\n\n";
 		display(numbers);
-		std::cout << "\ncomp : " << contComp << std::endl; 
+		std::cout << std::endl;
+		std::cout << "comp : " << contComp << std::endl; 
 	}
 	else
 		std::cout << "give me positive numbers to sort.\n";
