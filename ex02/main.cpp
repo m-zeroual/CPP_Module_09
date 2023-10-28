@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/28 18:30:23 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/28 18:35:53 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 int contComp = 0;
 int mergeCount = 0;
 
-std::vector<int> convertFromPairToVector(vPair vP);
 int parse(char *av)
 {
 	char *end = NULL;
@@ -34,7 +33,7 @@ void display(std::vector <int> d)
 void swapPair(pair &p)
 {
 	pair    swap;
-	
+
 	swap.first = p.second;
 	swap.second = p.first;
 	p.first = swap.first;
@@ -49,7 +48,6 @@ vPair merge(std::vector<int> v, std::vector<int> &rest)
 	std::vector<int>	v1;
 	std::vector<int>	v2;
 
-	// c = pow(2, ++mergeCount);
 	c = 1 << ++mergeCount;
 	size_t size = v.size() / c * c;
 	for (size_t i = 0; i < size; i+=c) {
@@ -121,36 +119,6 @@ std::vector<int> convertToVector(vVector v)
 	}
 	return (v1);
 }
-void recursion(std::vector<int> &v)
-{
-	std::cout << ">>>>> REC <<<<<" << std::endl;
-	std::vector<int>	rest;
-
-	vPair vp = merge(v, rest);
-	sort(vp);
-	v = convertFromPairToVector(vp);
-	if (vp.size() && vp.size() != 1)
-		recursion(v);
-
-	vPair							tmp;
-	std::vector< std::vector<int> >	mchain;
-	std::vector< std::vector<int> >	paned;
-	vPair vpIn = insertion(v);
-	size_t size = vpIn.size();
-
-	for (size_t i = 0; i < size; i++) {
-		paned.push_back(vpIn[i].first);
-		mchain.push_back(vpIn[i].second);
-	}
-	if (rest.size())
-		paned.push_back(rest);
-
-	mchain.insert(mchain.begin(), *paned.begin());
-	for (size_t i = 1; i < paned.size(); i++)
-		mchain.insert(std::lower_bound(mchain.begin(), mchain.end(), paned[i], comp), paned[i]);
-
-	v = convertToVector(mchain);
-}
 std::vector<int> convertFromPairToVector(vPair vP)
 {
 	std::vector<int> v; 
@@ -164,16 +132,38 @@ std::vector<int> convertFromPairToVector(vPair vP)
 	}
 	return (v);
 }
+void recursion(std::vector<int> &v)
+{
+	std::cout << ">>>>> REC <<<<<" << std::endl;
+	std::vector<int>	rest;
+
+	vPair vp = merge(v, rest);
+	sort(vp);
+	v = convertFromPairToVector(vp);
+	if (vp.size() && vp.size() != 1)
+		recursion(v);
+
+	std::vector< std::vector<int> >	mchain;
+	std::vector< std::vector<int> >	paned;
+	vPair vpIn = insertion(v);
+
+	for (size_t i = 0; i < vpIn.size(); i++) {
+		paned.push_back(vpIn[i].first);
+		mchain.push_back(vpIn[i].second);
+	}
+	if (rest.size())
+		paned.push_back(rest);
+
+	mchain.insert(mchain.begin(), *paned.begin());
+	for (size_t i = 1; i < paned.size(); i++)
+		mchain.insert(std::lower_bound(mchain.begin(), mchain.end(), paned[i], comp), paned[i]);
+	v = convertToVector(mchain);
+}
 
 int main(int ac, char *av[])
 {
-	std::vector<int>    sortedN;
-	std::vector<int>    rest;
 	std::vector<int>    numbers;
-	vPair               vpairs;
-	vPair               save;
-	pair				p;
-	
+
 	if (ac > 1)
 	{
 		av = av + 1;
