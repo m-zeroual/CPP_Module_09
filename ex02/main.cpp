@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/29 14:46:45 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/29 15:20:34 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,14 +119,7 @@ void insertion(std::vector<int> &v, std::vector<int> rest)
 	std::vector<int>				v2;
 	std::vector< std::vector<int> >	mchain;
 	std::vector< std::vector<int> >	paned;
-	// std::vector<size_t>				jacobsthal;
 
-	// for (size_t i = 0; i < 20; i++)
-	// {
-	// 	jacobsthal.push_back((pow(2, ((i + 1) + 1)) + pow(-1, ( i + 1))) / 3);
-	// 	// std::cout << jacobsthal[i] << std::endl;
-	// }
-	
 	size_t c = 1 << mergeCount--;
 
 	size_t size = v.size() / c * c;
@@ -147,54 +140,20 @@ void insertion(std::vector<int> &v, std::vector<int> rest)
 	}
 	if (rest.size())
 		paned.push_back(rest);
+
 	mchain.insert(mchain.begin(), *paned.begin());
 	int countPush = 0;
-	for (size_t i = 1; i < paned.size() - 1; i++) {
+	for (size_t i = 1; i < paned.size(); i++) {
 			size_t jacobsthal = (pow(2, ((i+1) + 1)) + pow(-1, (i+1))) / 3;						//(2k+1 + (−1)k)/3
 			size_t jacobsthalEnd = ((pow(2, ((i+1) - 1) + 1) + pow(-1, ((i+1) - 1))) / 3) + 1;	//(2(k-1)+1 + (−1)(k-1))/3 => Btk−1+1
-			// if (jacobsthal > paned.size() || jacobsthalEnd > paned.size())
-			// 	break ;
-			// std::cout << "size\t: " << paned.size() << std::endl;
-			// std::cout << "here\t: " << jacobsthal << " " << jacobsthalEnd << std::endl;
-			// std::cout << "start\t: " << jacobsthal << std::endl;
-			// std::cout << "end\t: " << jacobsthalEnd << std::endl;
-			// std::cout << "\n";
-			// std::cout << "\n";
 			if (jacobsthal > paned.size())
 				jacobsthal = paned.size();
-			// if (jacobsthalEnd > paned.size())
-			// 	jacobsthalEnd = paned.size();
-			// std::cout << "\n";
-			// std::cout << "size\t: " << paned.size() << std::endl;
-			// std::cout << "here\t: " << jacobsthal << " " << jacobsthalEnd << std::endl;
-			std::cout << "start\t: " << jacobsthal << std::endl;
-			std::cout << "end\t: " << jacobsthalEnd  << std::endl;
-			std::cout << "\n";
+
 			if (jacobsthalEnd > jacobsthal)
 				break ;
 			for (size_t j = jacobsthal; j >= jacobsthalEnd ; j--)
-			{
-				std::cout << "idx = " << j-1 << std::endl;
-				display(paned[j-1]);
-				std::cout << std::endl;
-				// size_t jac = jacobsthal + i + j - ;
-				// if(jac > mchain.size())
-				// 	jac = mchain.size() - 1;
-				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + (jacobsthal + countPush), paned[j-1], comp), paned[j-1]);
-				countPush++;
-				// std::cout << "j = " << j << std::endl;
-			}
-			
-			// for (size_t j = jacobsthal; j < jacobsthalEnd; j++)
-			// {
-			// 	std::cout << jacobsthal << std::endl;
-			// 	std::cout << jacobsthalEnd << std::endl;
-			// 	if (j > paned.size())
-			// 		break;
-			// 	// std::cout << j << std::endl;
-			// }
+				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + (jacobsthal + countPush++), paned[j-1], comp), paned[j-1]);
 			// mchain.insert(std::lower_bound(mchain.begin(), mchain.end(), paned[i], comp), paned[i]);
-
 	}
 	v = convertToVector(mchain);
 }
