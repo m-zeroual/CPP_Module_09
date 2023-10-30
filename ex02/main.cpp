@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/29 15:20:34 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/30 11:35:03 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,17 +142,40 @@ void insertion(std::vector<int> &v, std::vector<int> rest)
 		paned.push_back(rest);
 
 	mchain.insert(mchain.begin(), *paned.begin());
+	// if (paned.size() >= 2)
+	// 	mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + 2, paned[1], comp), paned[1]);
+
 	int countPush = 0;
+	size = mchain.size();
 	for (size_t i = 1; i < paned.size(); i++) {
 			size_t jacobsthal = (pow(2, ((i+1) + 1)) + pow(-1, (i+1))) / 3;						//(2k+1 + (−1)k)/3
 			size_t jacobsthalEnd = ((pow(2, ((i+1) - 1) + 1) + pow(-1, ((i+1) - 1))) / 3) + 1;	//(2(k-1)+1 + (−1)(k-1))/3 => Btk−1+1
+			// std::cout << "s = " << jacobsthal << std::endl;
+			// std::cout << "e = " << jacobsthalEnd << std::endl;
 			if (jacobsthal > paned.size())
 				jacobsthal = paned.size();
 
-			if (jacobsthalEnd > jacobsthal)
-				break ;
+			// if (jacobsthalEnd > paned.size())
+			// 	break ;
 			for (size_t j = jacobsthal; j >= jacobsthalEnd ; j--)
-				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + (jacobsthal + countPush++), paned[j-1], comp), paned[j-1]);
+			{
+				std::cout << "jacob = " << jacobsthal << std::endl;
+				std::cout << "j     = " << j << std::endl;
+				// std::cout << "e = " << jacobsthalEnd << std::endl;
+				// std::cout << "j = " << (jacobsthal - j) << std::endl;
+				// std::cout << "j = " << (jacobsthalEnd - j) << std::endl;
+				// std::cout << "j = " << (jacobsthal - jacobsthalEnd) << std::endl;
+				// std::cout << "j = " << mchain.end() -1 - mchain.begin() << std::endl;
+				countPush =  jacobsthal + (mchain.size() - size);
+				std::cout << "bc = " << countPush << std::endl;
+				// if ()
+				// std::cout << "c = " << countPush << std::endl;
+				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + countPush , paned[j-1], comp), paned[j-1]);
+				// countPush +=  (jacobsthal - j);
+				// std::cout << "ac = " << countPush << std::endl;
+				// countPush--;
+			}
+			// countPush--;
 			// mchain.insert(std::lower_bound(mchain.begin(), mchain.end(), paned[i], comp), paned[i]);
 	}
 	v = convertToVector(mchain);
@@ -169,19 +192,6 @@ void recursion(std::vector<int> &v)
 	if (vp.size() != 1)
 		recursion(v);
 	insertion(v, rest);
-
-	// for (size_t i = 0; i < vpIn.size(); i++) {
-	// 	paned.push_back(vpIn[i].first);
-	// 	mchain.push_back(vpIn[i].second);
-	// }
-	// if (rest.size())
-	// 	paned.push_back(rest);
-
-	// mchain.insert(mchain.begin(), *paned.begin());
-	// for (size_t i = 1; i < paned.size(); i++) {
-	// 	mchain.insert(std::lower_bound(mchain.begin(), mchain.end(), paned[i], comp), paned[i]);
-	// }
-	// v = convertToVector(mchain);
 }
 
 int main(int ac, char *av[])
@@ -197,10 +207,16 @@ int main(int ac, char *av[])
 				return (1);
 			numbers.push_back(std::atoi(av[i]));
 		}
-		recursion(numbers);
+		std::cout << "befor = ";
 		display(numbers);
+		std::cout << "\n";
+		
+		recursion(numbers);
+		std::cout << "after =";
+		display(numbers);
+		std::cout<< "\n";
 		std::cout << std::endl;
-		std::cout << "comp : " << contComp << std::endl; 
+		// std::cout << "comp : " << contComp << std::endl; 
 	}
 	else
 		std::cout << "give me positive numbers to sort.\n";
