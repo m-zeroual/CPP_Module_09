@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:52:21 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/28 18:29:00 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/30 16:08:44 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,21 @@
 
 #include <iostream>
 #include <vector>
+#include <deque>
+#include <ctime>
+#include <cmath>
 #include <algorithm>
 #include <utility>
 
 
-typedef std::pair< std::vector<int>, std::vector<int> > pair;
-typedef std::vector<pair>                               vPair;
-typedef std::vector<std::vector<int> >                  vVector;
+// std::deque
+typedef std::pair< std::vector<int>, std::vector<int> > pairVector;
+typedef std::vector<pairVector>                         vectorPair;
+typedef std::vector<std::vector<int> >                  vectorVector;
 
+// std::deque
+typedef std::pair< std::deque<int>, std::deque<int> >   pairDeque;
+typedef std::deque<pairDeque>                           dequePair;
+typedef std::deque< std::deque<int> >                   dequeDeque;
 
 #endif
