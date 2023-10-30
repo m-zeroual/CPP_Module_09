@@ -6,14 +6,13 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/30 16:12:21 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/10/30 17:29:10 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
 
 int mergeCount = 0;
-
 int parse(char *av)
 {
 	char *end = NULL;
@@ -25,17 +24,19 @@ int parse(char *av)
 	return (1);
 }
 
-void display(std::string s, std::vector <int> d)
+template<typename T>
+void display(std::string s, T arrP)
 {
 	std::cout << s;
-	for (size_t i = 0; i < d.size(); i++)
-		std::cout << d[i] << " ";
+	for (size_t i = 0; i < arrP.size(); i++)
+		std::cout << arrP[i] << " ";
 	std::cout << std::endl;
 }
 
-void swapPair(pairVector &p)
+template<typename T>
+void swapPair(T &p)
 {
-	pairVector    swap;
+	T	swap;
 
 	swap.first = p.second;
 	swap.second = p.first;
@@ -43,6 +44,29 @@ void swapPair(pairVector &p)
 	p.second = swap.second;
 }
 
+template<typename T>
+bool comp(T a, T b)
+{
+	return (a.back() < b.back());
+}
+
+template<typename T>
+void sort(T &arrP)
+{
+	size_t size = arrP.size();
+	for (size_t i = 0; i < size; i++)
+	{
+		if (comp(arrP[i].second, arrP[i].first))
+			swapPair(arrP[i]);
+	}
+}
+
+
+
+
+
+
+// ------------------------- vector ---------------------------------
 vectorPair merge(std::vector<int> v, std::vector<int> &rest)
 {
 	pairVector			pair;
@@ -71,21 +95,6 @@ vectorPair merge(std::vector<int> v, std::vector<int> &rest)
 		v1.clear();
 	}
 	return(vp);
-}
-
-bool comp(std::vector<int> a, std::vector<int> b)
-{
-	return (a.back() < b.back());
-}
-
-void sort(vectorPair &vp)
-{
-	size_t size = vp.size();
-	for (size_t i = 0; i < size; i++)
-	{
-		if (comp(vp[i].second, vp[i].first))
-			swapPair(vp[i]);
-	}
 }
 
 std::vector<int> convertFromPairToVector(vectorPair vP)
@@ -154,7 +163,7 @@ void insertion(std::vector<int> &v, std::vector<int> rest)
 				break ;
 			for (size_t j = jacobsthalStart; j >= jacobsthalEnd ; j--) {
 				countPush = jacobsthalStart + (mchain.size() - size) - (jacobsthalStart - j);
-				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + countPush , paned[j-1], comp), paned[j-1]);
+				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + countPush , paned[j-1], comp<std::vector<int> >), paned[j-1]);
 			}
 	}
 	v = convertToVector(mchain);
@@ -162,6 +171,8 @@ void insertion(std::vector<int> &v, std::vector<int> rest)
 
 void recursion(std::vector<int> &v)
 {
+	if (v.size() == 1)
+		return ;
 	std::vector<int>	rest;
 
 	vectorPair vp = merge(v, rest);
@@ -172,35 +183,14 @@ void recursion(std::vector<int> &v)
 	insertion(v, rest);
 }
 
-
-
-
-// ------------------------------------------------
-void display(std::string s, std::deque <int> d)
-{
-	std::cout << s;
-	for (size_t i = 0; i < d.size(); i++)
-		std::cout << d[i] << " ";
-	std::cout << std::endl;
-}
-
-void swapPair(pairDeque &p)
-{
-	pairDeque    swap;
-
-	swap.first = p.second;
-	swap.second = p.first;
-	p.first = swap.first;
-	p.second = swap.second;
-}
-
+// ------------------------- deque ---------------------------------
 dequePair merge(std::deque<int> v, std::deque<int> &rest)
 {
-	pairDeque				pair;
-	dequePair				vp;
+	pairDeque			pair;
+	dequePair			vp;
 	size_t				c;
-	std::deque<int>	v1;
-	std::deque<int>	v2;
+	std::deque<int>		v1;
+	std::deque<int>		v2;
 
 	c = 1 << ++mergeCount;
 	size_t size = v.size() / c * c;
@@ -224,23 +214,7 @@ dequePair merge(std::deque<int> v, std::deque<int> &rest)
 	return(vp);
 }
 
-bool comp1(std::deque<int> a, std::deque<int> b)
-{
-	return (a.back() < b.back());
-}
-
-void sort(dequePair &vp)
-{
-	size_t size = vp.size();
-	for (size_t i = 0; i < size; i++)
-	{
-		if (comp1(vp[i].second, vp[i].first))
-			swapPair(vp[i]);
-	}
-}
-
-
-std::deque<int> convertFromPairTodeque(dequePair vP)
+std::deque<int> convertFromPairToDeque(dequePair vP)
 {
 	std::deque<int> v;
 
@@ -255,7 +229,7 @@ std::deque<int> convertFromPairTodeque(dequePair vP)
 	return (v);
 }
 
-std::deque<int> convertTodeque(dequeDeque v)
+std::deque<int> convertToDeque(dequeDeque v)
 {
 	std::deque<int> v1;
 
@@ -306,30 +280,32 @@ void insertion(std::deque<int> &v, std::deque<int> rest)
 				break ;
 			for (size_t j = jacobsthalStart; j >= jacobsthalEnd ; j--) {
 				countPush = jacobsthalStart + (mchain.size() - size) - (jacobsthalStart - j);
-				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + countPush , paned[j-1], comp1), paned[j-1]);
+				mchain.insert(std::lower_bound(mchain.begin(), mchain.begin() + countPush , paned[j-1], comp<std::deque<int> >), paned[j-1]);
 			}
 	}
-	v = convertTodeque(mchain);
+	v = convertToDeque(mchain);
 }
 
 void recursion(std::deque<int> &v)
 {
+	if (v.size() == 1)
+		return ;
 	std::deque<int>	rest;
 
 	dequePair vp = merge(v, rest);
 	sort(vp);
-	v = convertFromPairTodeque(vp);
+	v = convertFromPairToDeque(vp);
 	if (vp.size() != 1)
 		recursion(v);
 	insertion(v, rest);
 }
-// ------------------------------------------------
 
 
+// --------------- main --------------------
 int main(int ac, char *av[])
 {
-	std::vector<int>    vp;
-	std::deque<int>     dq;
+	std::vector<int>    vector;
+	std::deque<int>     deque;
 	float				us;
 	clock_t				time;
 	
@@ -339,25 +315,20 @@ int main(int ac, char *av[])
 		for (int i = 0; i < ac - 1; i++) {
 			if (!parse(av[i]))
 				return (1);
-			vp.push_back(std::atoi(av[i]));
-			dq.push_back(std::atoi(av[i]));
+			vector.push_back(std::atoi(av[i]));
+			deque.push_back(std::atoi(av[i]));
 		}
-		display("Before:\t", vp);
+		display("Before:\t", vector);
 		time = clock();
-		std::cout << time << "\n";
-		recursion(vp);
-		// ((float)t)/CLOCKS_PER_SEC
+		recursion(vector);
 		us = ( (float)(clock() - time) / CLOCKS_PER_SEC * 1000 );
-		display("After:\t", vp);
+		display("After:\t", vector);
 		std::cout << "Time to process a range of " << ac-1 << " elements with std::vector " << us << " us\n";
 		mergeCount = 0;
 		time = clock();
-		recursion(dq);
+		recursion(deque);
 		us = ( (float)(clock() - time) / CLOCKS_PER_SEC * 1000 );
 		std::cout << "Time to process a range of " << ac-1 << " elements with std::deque " << us << " us\n";
-
-
-		// std::cout << "comp : " << count << std::endl; 
 	}
 	else
 		std::cout << "give me positive numbers to sort.\n";
