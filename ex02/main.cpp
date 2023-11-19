@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:51:45 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/30 17:52:40 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/11/19 15:17:39 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int main(int ac, char *av[])
 		display("Before:\t", vector);
 		time = clock();
 		recursion(vector);
-		us = ( (float)(clock() - time) / CLOCKS_PER_SEC * 1000 );
+		us = (float)(clock() - time) / CLOCKS_PER_SEC * 1000;
 		display("After:\t", vector);
 		std::cout << "Time to process a range of " << ac-1 << " elements with std::vector " << us << " us\n";
 

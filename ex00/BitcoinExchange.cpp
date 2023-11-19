@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 12:28:42 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/21 08:05:00 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/11/17 11:47:03 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@ int		parseLine(std::string line, std::string delimiter, int i, std::list<_data> 
 	if (!line.empty()) {
 		std::list<std::string> lineSplit = split(line, delimiter);
 
-		if (lineSplit.size() == 2 && !(*lineSplit.begin()).empty() && !(*++lineSplit.begin()).empty()) {
+		if (lineSplit.size() == 2) {
 			std::string date = trimSpace(*lineSplit.begin());
 			std::string value = trimSpace(*++lineSplit.begin());
 			if (i != 0) {
@@ -136,7 +136,6 @@ int		parseLine(std::string line, std::string delimiter, int i, std::list<_data> 
 		}
 		else {
 			return (0);
-			
 		}
 	}
 	return (1);

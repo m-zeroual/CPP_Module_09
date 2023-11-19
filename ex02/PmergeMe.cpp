@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:53:12 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/10/30 17:46:00 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/11/19 15:16:39 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,8 +113,8 @@ void insertion(std::vector<int> &v, std::vector<int> rest)
 	int countPush = 0;
 	size = mchain.size();
 	for (size_t i = 1; i < paned.size(); i++) {
-			size_t jacobsthalStart = (pow(2, ((i+1) + 1)) + pow(-1, (i+1))) / 3;				//(2k+1 + (−1)k)/3
-			size_t jacobsthalEnd = ((pow(2, ((i+1) - 1) + 1) + pow(-1, ((i+1) - 1))) / 3) + 1;	//(2(k-1)+1 + (−1)(k-1))/3 => Btk−1+1
+			size_t jacobsthalStart = (pow(2, ((i+1) + 1)) + pow(-1, (i+1))) / 3;
+			size_t jacobsthalEnd = ((pow(2, ((i+1) - 1) + 1) + pow(-1, ((i+1) - 1))) / 3) + 1;
 			if (jacobsthalStart > paned.size())
 				jacobsthalStart = paned.size();
 			if (jacobsthalEnd > paned.size())
@@ -230,8 +230,8 @@ void insertion(std::deque<int> &v, std::deque<int> rest)
 	int countPush = 0;
 	size = mchain.size();
 	for (size_t i = 1; i < paned.size(); i++) {
-			size_t jacobsthalStart = (pow(2, ((i+1) + 1)) + pow(-1, (i+1))) / 3;					//(2k+1 + (−1)k)/3
-			size_t jacobsthalEnd = ((pow(2, ((i+1) - 1) + 1) + pow(-1, ((i+1) - 1))) / 3) + 1;	    //(2(k-1)+1 + (−1)(k-1))/3 => Btk−1+1
+			size_t jacobsthalStart = (pow(2, ((i+1) + 1)) + pow(-1, (i+1))) / 3;
+			size_t jacobsthalEnd = ((pow(2, ((i+1) - 1) + 1) + pow(-1, ((i+1) - 1))) / 3) + 1;
 			if (jacobsthalStart > paned.size())
 				jacobsthalStart = paned.size();
 			if (jacobsthalEnd > paned.size())
