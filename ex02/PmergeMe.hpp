@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/21 13:52:21 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/11/17 15:03:46 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/11/19 15:21:31 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 #include <deque>
 #include <ctime>
 #include <cmath>
-#include <algorithm>
-#include <utility>
 
 // std::vector
 typedef std::pair< std::vector<int>, std::vector<int> > pairVector;
