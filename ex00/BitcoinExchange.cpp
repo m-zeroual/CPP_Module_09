@@ -6,7 +6,7 @@
 /*   By: mzeroual <mzeroual@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/19 12:28:42 by mzeroual          #+#    #+#             */
-/*   Updated: 2023/11/17 11:47:03 by mzeroual         ###   ########.fr       */
+/*   Updated: 2023/11/20 09:34:35 by mzeroual         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ int	parseDate(std::string date)
 				|| (dateLong[i - 1] == 2 && ((dateLong[i - 2] % 4 == 0 && !(dateLong[i] >= 1 && dateLong[i] <= 29)) 
 										|| (dateLong[i - 2] % 4 != 0 && !(dateLong[i] >= 1 && dateLong[i] <= 28))))
 				|| (dateLong[i - 2] == 2009 && dateLong[i - 1] == 1 && dateLong[i] < 3)
+				|| (dateLong[i - 2] == 2023 && (dateLong[i - 1] > 11 || (dateLong[i - 1] == 11 && dateLong[i] > 20)))
 				))
 				return (0);
 		}
