@@ -2,82 +2,78 @@
 
 Merge-Insertion Sort is a hybrid sorting algorithm that combines the strengths of Merge Sort and Insertion Sort. This method is particularly effective for sorting a wide range of datasets, adapting dynamically to the input's characteristics.
 
-## Overview
+## Overview (Step-by-Step)
 
-Merge-Insertion Sort follows a two-phase approach:
-1. **Merge Phase:** The algorithm initially divides the array into pairs and sorts these pairs using a merge-like operation.
-2. **Insertion Phase:** After merging, it refines the sorted output using insertion sorting, especially beneficial for nearly sorted data.
+### Initial Recursion:
 
-## How Merge-Insertion Sort Works
+- **Rest:** 939  
+- **Pairs:** `[80 :102 ][650 :692][695 :967][130 :262][220 :335][47 :605][204 :483][406 :773][69 :284][495 :542]`
 
-1. **Initial Array:**
-   The algorithm starts with an unsorted array:
-   ```
-   [80, 102, 650, 692, 967, 695, 130, 262, 220, 335, 605, 47, 204, 483, 773, 406, 284, 69, 542, 495, 939]
-   ```
+### First Merge Phase:
 
-2. **First Recursion: Merging Pairs**
-   - The array is divided into pairs:
-     ```
-     [80, 102], [650, 692], [967, 695], [130, 262], [220, 335], [47, 605], [204, 483], [406, 773], [69, 284], [495, 542]
-     ```
-   - Each pair is sorted:
-     ```
-     {80, 102}, {650, 692}, {695, 967}, {130, 262}, {220, 335}, {47, 605}, {204, 483}, {406, 773}, {69, 284}, {495, 542}
-     ```
+- **Merging pairs while noting the remaining elements.**  
+- **Rest:** NULL  
+- **Merged:** `[80 102 :650 692][130 262 :695 967][220 335 :47 605][204 483 :406 773][69 284 :495 542]`
 
-3. **Second Recursion: Merging Larger Groups**
-   - The sorted pairs are merged into larger groups:
-     ```
-     {80, 102, 650, 692} - {130, 262, 695, 967} => {80, 102, 130, 262, 650, 692, 695, 967}
-     ```
+### Second Merge Phase:
 
-4. **Continue Merging:**
-   - The merging continues until the entire array is sorted:
-     ```
-     Final Merged Output: {47, 69, 80, 102, 130, 204, 220, 262, 284, 335, 406, 483, 495, 542, 605, 650, 692, 695, 773, 939, 967}
-     ```
+- **Further merging with remaining elements.**  
+- **Rest:** `69 284 495 542`  
+- **Merged:** `[80 102 650 692 :130 262 695 967][220 335 47 605 :204 483 406 773]`
 
-5. **Insertion Sort Phase:**
-   - After merging, the insertion sort phase refines the output, leading to the final sorted array.
+### Final Merge Phase:
 
-## Example Breakdown
+- **Completing the merge process.**  
+- **Rest:** NULL  
+- **Merged:** `[220 335 47 605 204 483 406 773 :80 102 650 692 130 262 695 967]`
 
-Using the provided data and results from the Merge-Insertion Sort:
+### Reverse Phase (Final Merging Steps):
 
-1. **Recursive Merges:**
-   ```
-   >>>>> REC <<<<<
-   rest = 939 
-   [80 :102 ][650 :692 ][695 :967 ][130 :262 ][220 :335 ][47 :605 ][204 :483 ][406 :773 ][69 :284 ][495 :542 ]
-   >>>>> REC <<<<<
-   rest = 
-   [80 102 :650 692 ][130 262 :695 967 ][220 335 :47 605 ][204 483 :406 773 ][69 284 :495 542 ]
-   ```
+**Reverse merging to complete the sorting.**
 
-2. **Further Merging:**
-   ```
-   >>>>> REV <<<<<
-   [220 335 47 605 :80 102 650 692 130 262 695 967 ]
-   ```
+#### Step 1:
 
-3. **Final Merged Output:**
-   ```
-   >>>>> REV <<<<<
-   [80 :102 ][130 :262 ][69 :284 ][220 :335 ][204 :483 ][495 :542 ][47 :605 ][650 :692 ][406 :773 ][695 :967 ]
-   main_chain : 47 69 80 102 130 204 220 262 284 335 406 483 495 542 605 650 692 695 773 939 967 
-   ```
+- **Input:** `[220 335 47 605 204 483 406 773 :80 102 650 692 130 262 695 967]`  
+- **Main Chain:** `80 102 650 692 130 262 695 967`  
+- **Paned:** `220 335 47 605 204 483 406 773`  
+- **Result:** `220 335 47 605 204 483 406 773 80 102 650 692 130 262 695 967`
 
-4. **Final Sorted Array:**
-   ```
-   47, 69, 80, 102, 130, 204, 220, 262, 284, 335, 406, 483, 495, 542, 605, 650, 692, 695, 773, 939, 967 
-   ```
+#### Step 2:
 
-## Advantages
+- **Input:** `[220 335 47 605 :204 483 406 773 ][80 102 650 692 :130 262 695 967]`  
+- **Main Chain:** `204 483 406 773 ,130 262 695 967`  
+- **Paned:** `220 335 47 605 ,80 102 650 692 ,69 284 495 542`  
+- **Result:** `69 284 495 542 220 335 47 605 80 102 650 692 204 483 406 773 130 262 695 967`
 
-- Efficient for both small and large datasets.
-- Adaptive to nearly sorted arrays due to the incorporation of Insertion Sort.
+#### Step 3:
+
+- **Input:** `[69 284 :495 542 ][220 335 :47 605 ][80 102 :650 692 ][204 483 :406 773 ][130 262 :695 967]`  
+- **Main Chain:** `495 542 ,47 605 ,650 692 ,406 773 ,695 967`  
+- **Paned:** `69 284 ,220 335 ,80 102 ,204 483 ,130 262`  
+- **Result:** `80 102 130 262 69 284 220 335 204 483 495 542 47 605 650 692 406 773 695 967`
+
+#### Step 4:
+
+- **Input:** `[80 :102 ][130 :262 ][69 :284][220 :335][204 :483][495 :542 ][47 :605][650 :692][406 :773][695 :967]`  
+- **Main Chain:** `102 ,262 ,284 ,335 ,483 ,542 ,605 ,692 ,773 ,967`  
+- **Paned:** `80 ,130 ,69 ,220 ,204 ,495 ,47 ,650 ,406 ,695 ,939`  
+- **Result:** `47 69 80 102 130 204 220 262 284 335 406 483 495 542 605 650 692 695 773 939 967`
+
+### Final Output:
+
+The final sorted array is:
+   47 69 80 102 130 204 220 262 284 335 406 483 495 542 605 650 692 695 773 939 967
+
+
+### Total Comparisons:
+
+The total number of comparisons made during the sorting process is: **76**.
+
+## Conclusion
+
+The Merge-Insertion Sort algorithm effectively sorted the input array through systematic merging and reversing, resulting in a completely ordered output with a detailed record of operations.
 
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+
