@@ -6,7 +6,7 @@ On line 7, an error occurred due to an invalid date and a negative value. The da
 
 ## Solution:
 - Correct the date to a valid date. Since 2012 is a leap year, the correct date should be `2012-02-29`.
-- Ensure that the value is positive. Replace `-1` with a positive value.
+- Ensure that the value is positive. Replace `-1` with a positive value between 0 and 1000.
 
 ### Corrected Line:
 ```bash
