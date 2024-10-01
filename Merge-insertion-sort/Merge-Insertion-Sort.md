@@ -4,6 +4,9 @@ Merge-Insertion Sort is a hybrid sorting algorithm that combines the strengths o
 
 ## Overview (Step-by-Step)
 
+## Random Numbers
+- 80 102 650 692 967 695 130 262 220 335 605 47 204 483 773 406 284 69 542 495 939 
+
 ### Initial Recursion:
 
 - **Rest:** 939  
