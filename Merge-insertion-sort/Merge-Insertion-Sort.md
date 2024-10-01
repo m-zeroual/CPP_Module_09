@@ -77,7 +77,7 @@ The total number of comparisons made during the sorting process is: **76**.
 - The final sorted array is:
 47 69 80 102 130 204 220 262 284 335 406 483 495 542 605 650 692 695 773 939 967
 
-##### example: [simulation](https://github.com/m-zeroual/CPP_Module_09/blob/master/Merge-insertion-sort/Exemple/exemple)
+##### [simulation](https://github.com/m-zeroual/CPP_Module_09/blob/master/Merge-insertion-sort/Exemple/exemple)
 ## Conclusion
 
 The Merge-Insertion Sort algorithm effectively sorted the input array through systematic merging and reversing, resulting in a completely ordered output with a detailed record of operations.
